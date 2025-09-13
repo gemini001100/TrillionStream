@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
+
+
+    
+    <!-- <meta http-equiv="Content-Security-Policy" content="
+  connect-src 'self' 
+    https://*.googleapis.com 
+    https://*.firebaseio.com 
+    https://*.firebaseapp.com 
+    https://*.firebase.com
+    https://www.google-analytics.com
+    https://analytics.google.com
+    https://*.google-analytics.com
+    wss://*.firebaseio.com;
+  script-src 'self' 'unsafe-inline' 
+    https://www.gstatic.com 
+    https://*.googleapis.com 
+    https://www.googletagmanager.com;
+  font-src 'self' 
+    https://fonts.gstatic.com;
+  style-src 'self' 'unsafe-inline' 
+    https://fonts.googleapis.com;
+    "> -->
+
+
+
+    <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.firebase.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com wss://*.firebaseio.com; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://*.googleapis.com https://www.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;">
+
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;"> -->
+
+
+
+
+    <!-- <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googletagmanager.com;
+    connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com https://*.googleapis.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    "> -->
+
+
+
+
+    <style>
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+        .skip-link { position: absolute; top: -40px; left: 6px; background: #1a1aa7; color: white; padding: 8px; text-decoration: none; z-index: 9999; transition: top 0.2s; }
+        .skip-link:focus { top: 6px; }
+    </style>
+
+
+
+
+
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet"> -->
+
+
+
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+
+
+
+
+
+
+
+
+
+    <!-- <link rel="icon" href="/favicon.ico" sizes="512x512"> -->
+
+<script type="module">
+  // Import Firebase services
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+  // Your Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDqRQF0YsDF6vRvd_Z-fpq3mB-r-5m5Sic",
+    authDomain: "trillionstream-web.firebaseapp.com",
+    projectId: "trillionstream-web",
+    storageBucket: "trillionstream-web.firebasestorage.app",
+    messagingSenderId: "1004618999090",
+    appId: "1:1004618999090:web:18be9141ad209a6a00a32b",
+    measurementId: "G-DDWQ7LQ0YN"
+  };
+
+  // Production FirebaseManager with Authentication
+  class FirebaseManager {
+    constructor() {
+      this.app = initializeApp(firebaseConfig);
+      this.analytics = getAnalytics(this.app);
+      this.db = getFirestore(this.app);
+      this.auth = getAuth(this.app);
+      this.initialized = false;
+      this.user = null;
+      
+      this.init();
+    }
+
+    async init() {
+      try {
+        // Listen for authentication state changes
+        onAuthStateChanged(this.auth, (user) => {
+          this.user = user;
+          this.initialized = true;
+          console.log('🔐 Auth state changed:', user ? 'Authenticated' : 'Not authenticated');
+          
+          // Signal that Firebase is ready
+          window.dispatchEvent(new CustomEvent('firebaseReady'));
+        });
+
+        // Sign in anonymously for seamless user experience
+        await signInAnonymously(this.auth);
+        console.log('✅ Firebase initialized with anonymous authentication');
+        
+      } catch (error) {
+        console.error('❌ Firebase initialization failed:', error);
+        this.initialized = false;
+      }
+    }
+
+    async ensureAuthenticated() {
+      if (!this.user) {
+        console.log('🔄 Signing in anonymously...');
+        try {
+          await signInAnonymously(this.auth);
+          return true;
+        } catch (error) {
+          console.error('❌ Authentication failed:', error);
+          return false;
+        }
+      }
+      return true;
+    }
+
+    async submitEmail(email) {
+      if (!this.initialized) {
+        return { success: false, error: 'Firebase not initialized'};
+      }
+
+      const authenticated = await this.ensureAuthenticated();
+      if (!authenticated) {
+        return { success: false, error: 'Authentication failed'};
+      }
+
+      try {
+        console.log('📧 Submitting email to Firestore:', email);
+        
+        const docRef = await addDoc(collection(this.db, 'emails'), {
+          email: email,
+          timestamp: serverTimestamp(),
+          source: 'landing_page',
+          userAgent: navigator.userAgent,
+          userId: this.user.uid
+        });
+        
+        console.log('✅ Email submitted with ID:', docRef.id);
+        return { success: true, id: docRef.id };
+        
+      } catch (error) {
+        console.error('❌ Error submitting email:', error);
+        return { success: false, error: error.message };
+      }
+    }
+
+    async submitSuggestion(data) {
+      if (!this.initialized) {
+        return { success: false, error: 'Firebase not initialized' };
+      }
+
+      const authenticated = await this.ensureAuthenticated();
+      if (!authenticated) {
+        return { success: false, error: 'Authentication failed' };
+      }
+
+      try {
+        console.log('💡 Submitting suggestion to Firestore:', data);
+        
+        const docRef = await addDoc(collection(this.db, 'suggestions'), {
+          ...data,
+          timestamp: serverTimestamp(),
+          userId: this.user.uid
+        });
+        
+        console.log('✅ Suggestion submitted with ID:', docRef.id);
+        return { success: true, id: docRef.id };
+        
+      } catch (error) {
+        console.error('❌ Error submitting suggestion:', error);
+        return { success: false, error: error.message };
+      }
+    }
+  }
+
+  // Create and attach FirebaseManager to window
+  window.firebaseManager = new FirebaseManager();
+</script>
+
+
+
+
+<!-- // Your existing Firebase configuration
+// const firebaseConfig = {
+//     apiKey: "AIzaSyBN96uUaaXxmeLlkZP-_oqXcxhd4rPYjFA",
+//     authDomain: "trillionstream.firebaseapp.com",
+//     projectId: "trillionstream",
+//     storageBucket: "trillionstream.firebasestorage.app",
+//     messagingSenderId: "495817579242",
+//     appId: "1:495817579242:web:8ce4c54ee05e22d25e1593",
+//     measurementId: "G-0HH89HZTH1"
+// }; -->
+
+    <link rel="shortcut icon" href="/favicon/logo6 (512x512).png" type="image/x-icon">
+    <link rel="icon"  sizes="16x16" href="logo6 (16x16).png">
+    <link rel="icon"  sizes="32x32" href="logo6 (32x32).png">
+    <link rel="icon"  sizes="48x48" href="logo6 (48x48).png">
+    <link rel="icon"  sizes="96x96" href="logo6 (96x96).png">
+    <link rel="icon"  sizes="192x192" href="logo6(192x192).png">
+
+    <!-- Apple devices -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/logo6(180x180).png">
+
+
+            <!-- <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+            <link rel="manifest" href="/site.webmanifest"> -->
+
+
+    
+
+
+    <link rel="stylesheet" href="style.css">
+    <script src="video-manager.js"></script>
+
+
+
+    <title class="maintitle">Home | TrillionStream</title>
+</head>
+<body>
+    <!-- <div class="textlogodiv"><h2 id="textlogo">TrillionStream</h2></div> -->
+
+
+    <!-- CHANGE your textlogodiv to this -->
+    <header class="textlogodiv" role="banner">
+        <h1 id="textlogo" aria-label="TrillionStream - Ultra-Low Latency Cloud Gaming">TrillionStream</h1>
+    </header>
+
+    <!-- CHANGE section to main -->
+
+
+
+    
+    <section id="proofvideosection">
+        <div id="proofvideo">
+            <!-- <video src="download2_newupscaledqmuRei8A.mp4_1757493782869undefined.mp4" id="video1" autoplay playsinline loop muted>
+
+        </video> -->
+
+        
+
+
+        <video 
+            src="videoplayback2 (online-video-cutter.com)undefined.mp4" 
+            id="video1" 
+            autoplay 
+            playsinline 
+            loop 
+            muted
+            aria-label="TrillionStream gaming demonstration"
+            poster="Fallback-image.jpg"
+        >
+            <p>Your browser doesn't support video. <img src="Fallback-image.jpg" alt="TrillionStream Gaming Experience"></p>
+        </video>
+
+
+        </div>
+
+        <div id="accessbenefitdiv">
+            <h2 id="accessbenefitinfo">
+                <mark class="accessbenifitmarked1">
+                                 YOUR 18-MONTHS ULTIMATE PASS
+                            
+
+                
+            </mark>
+        </h2>
+            <h4 id="accessbenefitsubinfo"><mark class="accessbenifitmarked2">
+                                 Request access and it's your's free on launch
+                    
+
+
+                        
+            </mark>
+        </h4>
+        </div>
+
+        <!-- <div id="requestaccessdiv">
+        <input type="email" name="Email address" id="requestaccessemail" placeholder="Enter your email" required>
+        <button type="submit" id="getaccessbtn">Request Access</button>
+    </div> -->
+  
+        
+        <form id="requestaccessdiv" role="form" aria-labelledby="accessbenefitinfo" novalidate>
+            <label for="requestaccessemail" class="sr-only">Email address for early access</label>
+            <input type="email" id="requestaccessemail" placeholder="Enter your email" required 
+                aria-required="true" aria-describedby="email-status" autocomplete="email">
+            <button type="submit" id="getaccessbtn" aria-describedby="email-status">Request Access</button>
+            <div id="email-status" class="status-message" role="alert" aria-live="polite" style="display: none;"></div>
+        </form>
+
+
+
+            
+ 
+    </section>
+
+    <section id="punchymetricssection">
+        <div id="punchymetrics"> 
+
+        <article id="pm1" class="metric-card" role="region" aria-labelledby="pm1head1">
+
+            <!-- <div id="pm1"> -->
+                <h4 id="pm1head1"><span id="mark1">Revolutionary bandwidth savings</span></h4>
+                
+                
+                <ul class="pm1ul">
+                    <li class="pm1li">Play on any connection</li>
+                    <li class="pm1li">1440p at less than 5 mbps</li>
+                    <li class="pm1li">less than 0.5 percent packet loss</li>
+                    <li class="pm1li">less than 1 percent buffering event</li>
+                </ul>
+            </mark>
+        <!-- </div> -->
+    
+        </article> 
+
+
+            <article id="pm2" class="metric-card" role="region" aria-labelledby="pm2head1">
+
+            <!-- <div id="pm2"> -->
+                <h3 id="pm2head1"><span class="mark2">Hollywood Grade Visuals</span></h3>
+                <!-- <h4 id="pm2head2">Play on any connection</h4> -->
+                <h5 id="pm2body"></h5>
+                <mark class="pm2mark">
+                <ul class="pm2ul2">
+                    <li class="pm2li">40+ Peak Signal-to-Noise Ratio <strong class="strong">(PSNR)</strong></li>
+                    <li class="pm2li">120+ Frame-Per-Second <strong class="strong">(FPS)</strong></li>
+                    <li class="pm1li">less than 3 ms (millisecond) jitter</li>
+                    
+                    
+                </ul>
+            </mark>
+            <!-- </div> -->
+
+            </article>
+
+
+            <article id="pm3" class="metric-card" role="region" aria-labelledby="pm3head1">
+
+            <!-- <div id="pm3"> -->
+                <h3 id="pm3head1"><span id="mark3">Feel Every Second Instantly all over globe</span></h3>
+                <!-- <h4 id="pm3head2">Play on any connection</h4> -->
+                <h5 id="pm3body"></h5>
+                <mark class="pm3mark">
+                <ul class="pm3ul3">
+                    <li class="pm3li">less than 10 ms (millisecond) perceived end-to-end latency</li>
+                    <li class="pm3li">less than 10 ms (millisecond) round-trip-time</li>
+                    <li class="pm3li">less than 5 ms (millisecond) motion to photon latency</li>
+                </ul>
+                </mark>
+            <!-- </div> -->
+            </article>
+        </div>
+    </section>
+
+    <!-- <section id="requestaccesssection">
+        <div id="requestaccessdiv">
+
+        </div>
+    </section> -->
+
+
+
+
+
+
+
+
+        <!-- <section id="footer">
+            <h3 id="footertitle">Suggest</h3>
+        </section>
+        
+    <section id="email-address">
+        <div class="emaildiv">openview84@gmail.com</div>
+    
+    </section> -->
+
+
+
+<!-- Replace your current footer section with this -->
+<section id="suggestionsection">
+    <div class="suggestion-container">
+        <h3 id="suggestiontitle">Help Us Improve</h3>
+        <p id="suggestionsubtitle">Your feedback shapes the future of cloud gaming</p>
+        
+        <form id="suggestionform" class="suggestion-form">
+            <div class="form-group">
+                <label for="suggestionname">Name (Optional)</label>
+                <input type="text" id="suggestionname" name="name" placeholder="Your name">
+            </div>
+            
+            <!-- <div class="form-group">
+                <label for="suggestionemail">Email (Optional)</label>
+                <input type="email" id="suggestionemail" name="email" placeholder="your@email.com">
+            </div> -->
+            
+            <div class="form-group">
+                <label for="suggestiontype">Suggestion Type</label>
+                <select id="suggestiontype" name="type" required>
+                    <option value="">Choose a category</option>
+                    <option value="feature">Feature Request</option>
+                    <option value="improvement">Improvement</option>
+                    <option value="bug">Bug Report</option>
+                    <option value="general">General Feedback</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="suggestionmessage">Your Suggestion *</label>
+                <textarea id="suggestionmessage" name="message" rows="5" placeholder="Tell us what you think..." required></textarea>
+                <div class="char-counter">
+                    <span id="charcount">0</span>/500 characters
+                </div>
+            </div>
+            
+            <button type="submit" id="submitsuggestion">Send Suggestion</button>
+        </form>
+        
+        <div id="suggestionstatus" class="status-message" style="display: none;"></div>
+    </div>
+</section>
+
+<section id="footer">
+    <div class="footer-info">
+        <div class="contact-info">
+            <h4>Contact</h4>
+            <div class="emaildiv">openview84@gmail.com</div>
+        </div>
+        <!-- <div class="company-info">
+            <h4>TrillionStream</h4>
+            <p>Revolutionizing Cloud Gaming</p> -->
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+    <!-- <script src="app.js"></script> -->
+
+        <!-- ADD this live region for screen readers -->
+    <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- UPDATE script loading with defer -->
+    <!-- <script src="video-manager.js" defer></script> -->
+    <script src="app2.js" defer></script>
+
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
