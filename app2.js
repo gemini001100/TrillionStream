@@ -424,17 +424,6 @@ class TrillionStreamApp {
     // //                 justify-content:center;
     // //                 font-family: 'Space Grotesk', sans-serif;
     // //             ">
-    // //                <img src="Fallback-image.jpg" 
-    // //                  alt="TrillionStream Gaming Experience" 
-    // //                 style="
-    // //                     width: 100%;
-    // //                     height: 100%;
-    // //                     object-fit: cover;
-    // //                     object-position: center;
-    // //                     opacity: 0.8;
-    // //                 "
-    // //                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-    // //             >
     // //             <div style="
     // //                 display: none;
     // //                 color: white;
@@ -590,17 +579,7 @@ class TrillionStreamApp {
             //                             align-items: center;
             //                             justify-content: center;
             //                         ">
-            //                             <img src="Fallback-image.jpg" 
-            //                                 alt="TrillionStream Gaming Experience" 
-            //                                 style="
-            //                                     width: 100%;
-            //                                     height: 100%;
-            //                                     object-fit: cover;
-            //                                     object-position: center;
-            //                                     opacity: 0.8;
-            //                                 "
-            //                                 onerror="this.style.display='none';"
-            //                             >
+            //                            
             //                         </div>
             //                     `;
                                 
@@ -771,17 +750,7 @@ handleVideoError(error) {
                 align-items: center;
                 justify-content: center;
             ">
-                <img src="Fallback-image.jpg" 
-                     alt="TrillionStream Gaming Experience" 
-                     style="
-                         width: 100%;
-                         height: 100%;
-                         object-fit: cover;
-                         object-position: center;
-                         opacity: 0.8;
-                     "
-                     onerror="this.style.display='none';"
-                >
+               
             </div>
         `;
         
