@@ -1294,7 +1294,7 @@ const additionalStyles = `
 
 /* Video loaded state */
 #video1.loaded {
-    opacity: 1;
+    opacity: 0.5;
     transition: opacity 0.5s ease-in-out;
 }
 
